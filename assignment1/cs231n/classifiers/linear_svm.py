@@ -89,7 +89,7 @@ def svm_loss_vectorized(W, X, y, reg):
   #   # to ignore the y-th position and only consider margin on max wrong class
   #   margins[y[i]] = 0
   #   loss += np.sum(margins)
-    
+
   scores = X.dot(W)
   correct_class_score = scores[np.arange(num_train), y]
   margins = np.maximum(0, scores - correct_class_score[:, np.newaxis] + delta)

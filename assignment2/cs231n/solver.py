@@ -105,7 +105,7 @@ class Solver(object):
     self.y_train = data['y_train']
     self.X_val = data['X_val']
     self.y_val = data['y_val']
-    
+
     # Unpack keyword arguments
     self.update_rule = kwargs.pop('update_rule', 'sgd')
     self.optim_config = kwargs.pop('optim_config', {})
@@ -117,9 +117,9 @@ class Solver(object):
     self.verbose = kwargs.pop('verbose', True)
 
     # Throw an error if there are extra keyword arguments
-    if len(kwargs) > 0:
-      extra = ', '.join('"%s"' % k for k in kwargs.keys())
-      raise ValueError('Unrecognized arguments %s' % extra)
+    if kwargs:
+      extra = ', '.join('"%s"' % k for k in kwargs)
+      raise ValueError(f'Unrecognized arguments {extra}')
 
     # Make sure the update rule exists, then replace the string
     # name with the actual function
@@ -146,7 +146,7 @@ class Solver(object):
     # Make a deep copy of the optim_config for each parameter
     self.optim_configs = {}
     for p in self.model.params:
-      d = {k: v for k, v in self.optim_config.iteritems()}
+      d = dict(self.optim_config.iteritems())
       self.optim_configs[p] = d
 
 
@@ -210,9 +210,7 @@ class Solver(object):
       scores = self.model.loss(X[start:end])
       y_pred.append(np.argmax(scores, axis=1))
     y_pred = np.hstack(y_pred)
-    acc = np.mean(y_pred == y)
-
-    return acc
+    return np.mean(y_pred == y)
 
 
   def train(self):

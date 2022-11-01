@@ -73,8 +73,7 @@ def relu_backward(dout, cache):
   - dx: Gradient with respect to x
   """
   x = cache
-  dx = np.where(x > 0, dout, 0)
-  return dx
+  return np.where(x > 0, dout, 0)
 
 
 def batchnorm_forward(x, gamma, beta, bn_param):
@@ -124,7 +123,13 @@ def batchnorm_forward(x, gamma, beta, bn_param):
   running_var = bn_param.get('running_var', np.zeros(D, dtype=x.dtype))
 
   out, cache = None, None
-  if mode == 'train':
+  if mode == 'test':
+    # Using running mean and variance to normalize
+    std = np.sqrt(running_var + eps)
+    xn = (x - running_mean) / std
+    out = gamma * xn + beta
+    cache = (mode, x, xn, gamma, beta, std)
+  elif mode == 'train':
     # Compute output
     mu = x.mean(axis=0)
     xc = x - mu
@@ -142,12 +147,6 @@ def batchnorm_forward(x, gamma, beta, bn_param):
     # Update running average of variance
     running_var *= momentum
     running_var += (1 - momentum) * var
-  elif mode == 'test':
-    # Using running mean and variance to normalize
-    std = np.sqrt(running_var + eps)
-    xn = (x - running_mean) / std
-    out = gamma * xn + beta
-    cache = (mode, x, xn, gamma, beta, std)
   else:
     raise ValueError('Invalid forward batchnorm mode "%s"' % mode)
 

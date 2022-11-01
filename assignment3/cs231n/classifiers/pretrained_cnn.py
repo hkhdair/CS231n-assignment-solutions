@@ -9,28 +9,52 @@ from cs231n.layer_utils import *
 class PretrainedCNN(object):
   def __init__(self, dtype=np.float32, num_classes=100, input_size=64, h5_file=None):
     self.dtype = dtype
-    self.conv_params = []
-    self.input_size = input_size
-    self.num_classes = num_classes
-    
-    # TODO: In the future it would be nice if the architecture could be loaded from
-    # the HDF5 file rather than being hardcoded. For now this will have to do.
-    self.conv_params.append({'stride': 2, 'pad': 2})
-    self.conv_params.append({'stride': 1, 'pad': 1})
-    self.conv_params.append({'stride': 2, 'pad': 1})
-    self.conv_params.append({'stride': 1, 'pad': 1})
-    self.conv_params.append({'stride': 2, 'pad': 1})
-    self.conv_params.append({'stride': 1, 'pad': 1})
-    self.conv_params.append({'stride': 2, 'pad': 1})
-    self.conv_params.append({'stride': 1, 'pad': 1})
-    self.conv_params.append({'stride': 2, 'pad': 1})
-
+    self.conv_params = [
+        {
+            'stride': 2,
+            'pad': 2
+        },
+        {
+            'stride': 1,
+            'pad': 1
+        },
+        {
+            'stride': 2,
+            'pad': 1
+        },
+        {
+            'stride': 1,
+            'pad': 1
+        },
+        {
+            'stride': 2,
+            'pad': 1
+        },
+        {
+            'stride': 1,
+            'pad': 1
+        },
+        {
+            'stride': 2,
+            'pad': 1
+        },
+        {
+            'stride': 1,
+            'pad': 1
+        },
+        {
+            'stride': 2,
+            'pad': 1
+        },
+    ]
     self.filter_sizes = [5, 3, 3, 3, 3, 3, 3, 3, 3]
     self.num_filters = [64, 64, 128, 128, 256, 256, 512, 512, 1024]
     hidden_dim = 512
 
     self.bn_params = []
-    
+
+    self.input_size = input_size
+    self.num_classes = num_classes
     cur_size = input_size
     prev_dim = 3
     self.params = {}
@@ -43,7 +67,7 @@ class PretrainedCNN(object):
       self.bn_params.append({'mode': 'train'})
       prev_dim = next_dim
       if self.conv_params[i]['stride'] == 2: cur_size /= 2
-    
+
     # Add a fully-connected layers
     fan_in = cur_size * cur_size * self.num_filters[-1]
     self.params['W%d' % (i + 2)] = np.sqrt(2.0 / fan_in) * np.random.randn(fan_in, hidden_dim)
@@ -53,7 +77,7 @@ class PretrainedCNN(object):
     self.bn_params.append({'mode': 'train'})
     self.params['W%d' % (i + 3)] = np.sqrt(2.0 / hidden_dim) * np.random.randn(hidden_dim, num_classes)
     self.params['b%d' % (i + 3)] = np.zeros(num_classes)
-    
+
     for k, v in self.params.iteritems():
       self.params[k] = v.astype(dtype)
 

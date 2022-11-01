@@ -121,15 +121,15 @@ class KNearestNeighbor(object):
     # HINT: Try to formulate the l2 distance using matrix multiplication    #
     #       and two broadcast sums.                                         #
     #########################################################################
-    
+
     # the following approach doesn't work since broadcasting expands the array past
     # memory limit
     #~ diff = X - self.X_train[:, np.newaxis] # MemoryError!
     #~ dists = np.sqrt((diff ** 2).sum(axis=2))
-    
+
     # split (p-q)^2 to p^2 + q^2 - 2pq
     dists = np.sqrt((X**2).sum(axis=1, keepdims=True) + (self.X_train**2).sum(axis=1) - 2 * X.dot(self.X_train.T))
-    
+
     #########################################################################
     #                         END OF YOUR CODE                              #
     #########################################################################
