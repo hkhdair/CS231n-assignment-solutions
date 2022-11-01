@@ -33,8 +33,7 @@ class TwoLayerNet(object):
     - hidden_size: The number of neurons H in the hidden layer.
     - output_size: The number of classes C.
     """
-    self.params = {}
-    self.params['W1'] = std * np.random.randn(input_size, hidden_size)
+    self.params = {'W1': std * np.random.randn(input_size, hidden_size)}
     self.params['b1'] = np.zeros(hidden_size)
     self.params['W2'] = std * np.random.randn(hidden_size, output_size)
     self.params['b2'] = np.zeros(output_size)
@@ -80,7 +79,7 @@ class TwoLayerNet(object):
     #############################################################################
     #                              END OF YOUR CODE                             #
     #############################################################################
-    
+
     # If the targets are not given then jump out, we're done
     if y is None:
       return scores
@@ -104,12 +103,6 @@ class TwoLayerNet(object):
     reg_loss = 0.5 * reg * np.sum(W1 * W1) + 0.5 * reg * np.sum(W2 * W2)
     loss = data_loss + reg_loss
     #############################################################################
-    #                              END OF YOUR CODE                             #
-    #############################################################################
-
-    # Backward pass: compute gradients
-    grads = {}
-    #############################################################################
     # TODO: Compute the backward pass, computing the derivatives of the weights #
     # and biases. Store the results in the grads dictionary. For example,       #
     # grads['W1'] should store the gradient on W1, and be a matrix of same size #
@@ -119,8 +112,7 @@ class TwoLayerNet(object):
     dscores[range(N),y] -= 1
     dscores /= N
 
-    # W2 and b2
-    grads['W2'] = np.dot(a1.T, dscores)
+    grads = {'W2': np.dot(a1.T, dscores)}
     grads['b2'] = np.sum(dscores, axis=0)
     # next backprop into hidden layer
     dhidden = np.dot(dscores, W2.T)
@@ -244,11 +236,6 @@ class TwoLayerNet(object):
     z1 = X.dot(self.params['W1']) + self.params['b1']
     a1 = np.maximum(0, z1) # pass through ReLU activation function
     scores = a1.dot(self.params['W2']) + self.params['b2']
-    y_pred = np.argmax(scores, axis=1)
-    ###########################################################################
-    #                              END OF YOUR CODE                           #
-    ###########################################################################
-
-    return y_pred
+    return np.argmax(scores, axis=1)
 
 

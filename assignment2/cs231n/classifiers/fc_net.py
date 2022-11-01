@@ -90,7 +90,7 @@ class TwoLayerNet(object):
     # If y is None then we are in test mode so just return scores
     if y is None:
       return scores
-    
+
     loss, grads = 0, {}
     ############################################################################
     # TODO: Implement the backward pass for the two-layer net. Store the loss  #
@@ -115,10 +115,7 @@ class TwoLayerNet(object):
     dx, dW1, db1 = affine_relu_backward(dx1, cache_hidden_layer)
     dW1 += self.reg * W1
 
-    grads.update({'W1': dW1,
-                  'b1': db1,
-                  'W2': dW2,
-                  'b2': db2})
+    grads |= {'W1': dW1, 'b1': db1, 'W2': dW2, 'b2': db2}
     ############################################################################
     #                             END OF YOUR CODE                             #
     ############################################################################
@@ -205,7 +202,7 @@ class FullyConnectedNet(object):
       self.dropout_param = {'mode': 'train', 'p': dropout}
       if seed is not None:
         self.dropout_param['seed'] = seed
-    
+
     # With batch normalization we need to keep track of running means and
     # variances, so we need to pass a special bn_param object to each batch
     # normalization layer. You should pass self.bn_params[0] to the forward pass
@@ -213,8 +210,8 @@ class FullyConnectedNet(object):
     # pass of the second batch normalization layer, etc.
     self.bn_params = []
     if self.use_batchnorm:
-      self.bn_params = [{'mode': 'train'} for i in xrange(self.num_layers - 1)]
-    
+      self.bn_params = [{'mode': 'train'} for _ in xrange(self.num_layers - 1)]
+
     # Cast all parameters to the correct datatype
     for k, v in self.params.iteritems():
       self.params[k] = v.astype(dtype)
@@ -232,7 +229,7 @@ class FullyConnectedNet(object):
     # Set train/test mode for batchnorm params and dropout param since they
     # behave differently during training and testing.
     if self.dropout_param is not None:
-      self.dropout_param['mode'] = mode   
+      self.dropout_param['mode'] = mode
     if self.use_batchnorm:
       for bn_param in self.bn_params:
         bn_param[mode] = mode
@@ -250,8 +247,7 @@ class FullyConnectedNet(object):
     # self.bn_params[1] to the forward pass for the second batch normalization #
     # layer, etc.                                                              #
     ############################################################################
-    layer = {}
-    layer[0] = X
+    layer = {0: X}
     cache_layer = {}
 
     for i in xrange(1, self.num_layers):
